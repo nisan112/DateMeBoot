@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ViewsController {
 	
-//	@GetMapping("/")
-//	public String getIndex() {
-//		return "index";
+	@GetMapping("/login")
+	public void getLogin() {
+//		return "login";
 //	}
+//	@GetMapping("/home")
+//	public
 
+}
 }

@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuer
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.project.DateMe.DAO.DAOCustom_I;
 import com.project.DateMe.DAO.UserDAO;
 import com.project.DateMe.Models.User;
 
@@ -21,35 +22,46 @@ import UserService_I.UserService_I;
 public class UserServices implements UserService_I {
 
 	private UserDAO userdao;
-	public UserServices(UserDAO userdao) {
+	private DAOCustom_I daocustom;
+	public UserServices(UserDAO userdao,DAOCustom_I daocustom) {
 		this.userdao = userdao;
+		this.daocustom = daocustom;
 	}
 	@Override
-	public User createUser(User user) {
+	public User createUserService(User user) {
 		User createdUser = userdao.save(user);
 		return createdUser;
 		
 	}
 	@Override
-	public String loginUser(String email, String password) {
+	public String loginUserService(String email, String password) {
+		System.out.println("email:"+email +"pass:"+password);
 	     //Check if email or password is null first
 	    if (email == null || password == null) {
 	        return "Email or password cannot be null";
 	    }
+	    //if user exists..
 	    else {
 	    
 	    Optional<User> admin = userdao.findById(email);
 	    if (admin.isPresent()) {
-	        User user = admin.get();
-	        String pass = user.getPassword();
+	        User user = admin.get(); //get user if it exists
+	        String pass = user.getPassword(); //retrieving user's password
 	        if (!password.equals(pass)) {
-	            return "Password didn't match";
+	            return "Password didn't match";  //if password donot match
 	        }
-	        return "Login successful"; // or any other success message
+	        return "Login successful"; // if it matches
 	    }
 	    return "No User found";
 	}
 	}
+	
+	@Override
+	public List<User> getUserService(String adminEmail) {
+		List<User> users = daocustom.getUsersExceptAdmin(adminEmail);
+		return users;
+	}
+	
 
 
 }
